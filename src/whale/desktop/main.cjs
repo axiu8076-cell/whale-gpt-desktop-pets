@@ -443,6 +443,6 @@ function updateTray() {
     { label: '跟随 Codex', type: 'radio', checked: desktopMode === 'follow-codex', click: () => setMode('follow-codex') },
     { label: '刷新余额', click: () => sendCommand('balance') }, { label: '查看用量记录', click: () => sendCommand('usage') },
     { label: 'API 设置', click: () => sendCommand('settings') }, { label: '查看运行状态', click: showStatusDialog },
-    { type: 'separator' }, { label: desktopMode === 'standalone' ? '退出（手动启动后恢复）' : '本次退出（下次打开 Codex 恢复）', click: pauseAndQuit }
+    { type: 'separator' }, { label: desktopMode === 'standalone' || macStandalone ? '退出（手动启动后恢复）' : '本次退出（下次打开 Codex 恢复）', click: pauseAndQuit }
   ]));
 }

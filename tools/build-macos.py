@@ -1,13 +1,17 @@
 """Build on Apple Silicon macOS; ditto preserves Electron framework symlinks."""
 from pathlib import Path
-import argparse, hashlib, json, os, platform, plistlib, shutil, subprocess, urllib.request, zipfile
+import argparse, hashlib, json, os, platform, plistlib, shutil, subprocess, urllib.request, zipfile, traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 VERSION = '44.3.0'
 NAME = 'Whale-Standalone-macOS-arm64-2026.10.16'
 
 def run(*args, **kwargs):
-    return subprocess.run([str(a) for a in args], check=True, **kwargs)
+    value = subprocess.run([str(a) for a in args], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, **kwargs)
+    print(value.stdout[-16000:], flush=True)
+    if value.returncode:
+        raise RuntimeError('Command failed: ' + str(args[0]) + '\n' + value.stdout[-12000:])
+    return value
 
 def sha(file):
     with file.open('rb') as stream:
@@ -86,4 +90,9 @@ def build(output):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--output', type=Path, required=True)
-    build(parser.parse_args().output)
+    try:
+        build(parser.parse_args().output)
+    except Exception:
+        message = traceback.format_exc()
+        print('::error::' + message.replace('%','%25').replace('\r','%0D').replace('\n','%0A'), flush=True)
+        raise

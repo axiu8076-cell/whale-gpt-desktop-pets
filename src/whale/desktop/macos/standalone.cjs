@@ -12,6 +12,10 @@ const settingsFile = path.join(data, 'mac-settings.json');
 const keyFile = path.join(data, 'api-key.encrypted');
 const loginFile = path.join(os.homedir(), 'Library/LaunchAgents/io.github.axiu8076.whale.login.plist');
 const testMode = !!process.env.WHALE_MAC_TEST_HOME;
+const installedApp = () => {
+  const location = path.resolve(process.execPath, '../../..');
+  return ['/Applications', path.join(os.homedir(), 'Applications')].includes(path.dirname(location)) && location.endsWith('.app');
+};
 let settings, settingsWindow, firstRun, writeJson, ConfigStore;
 let probeProcess, timer, hostState = { hostAlive: false }, hostAt = 0, battery = { present: false }, closing = false, lastProbeStart = 0;
 let control, keyError = '';
@@ -49,7 +53,7 @@ async function initialize() {
   writeJson(settingsFile, settings);
   ipcMain.handle('whale-mac-settings-read', event => {
     if (!accepts(event)) return null;
-    return { ...settings, hasKey: fs.existsSync(keyFile), keyError, startupAvailable: !testMode && !app.getPath('exe').includes('/AppTranslocation/') };
+    return { ...settings, hasKey: fs.existsSync(keyFile), keyError, startupAvailable: !testMode && installedApp() };
   });
   ipcMain.handle('whale-mac-settings-save', async (event, value) => {
     if (!accepts(event)) return { ok: false };
@@ -58,7 +62,7 @@ async function initialize() {
       const key = value.key.trim();
       if (key && (key.length > 1024 || /\s/.test(key))) throw new Error('Key 格式无效');
       const appPath = path.resolve(process.execPath, '../../..');
-      if (value.startup && (testMode || appPath.includes('/AppTranslocation/'))) throw new Error('请先把鲸鲸.app 放进「应用程序」，再启用登录启动。');
+      if (value.startup && (testMode || !installedApp())) throw new Error('请先把鲸鲸.app 放进「应用程序」，再启用登录启动。');
       // Fail closed: never write a plaintext key when the Keychain is locked.
       if (key) {
         if (!safeStorage.isEncryptionAvailable()) throw new Error('系统钥匙串暂不可用，请解锁登录钥匙串后重试。');
