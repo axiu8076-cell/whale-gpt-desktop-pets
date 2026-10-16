@@ -69,6 +69,7 @@ export function createCompanion({dataDir,pointToLocal=p=>p,enabled=true,buddyDat
     current.on('error',()=>{if(worker===current)worker=null;});current.on('exit',()=>{if(worker===current)worker=null;});
   }
   function sample(){
+    if(process.platform==='darwin')telemetry=read(path.join(dataDir,'macos-telemetry.json'));
     const now=Date.now(),cpu=os.cpus().reduce((a,c)=>{a.idle+=c.times.idle;a.total+=Object.values(c.times).reduce((x,y)=>x+y,0);return a;},{idle:0,total:0});
     const cpuLoad=lastCpu&&cpu.total>lastCpu.total?Math.round(100*(1-(cpu.idle-lastCpu.idle)/(cpu.total-lastCpu.total))):null;lastCpu=cpu;
     const total=os.totalmem(),ramUsed=total-os.freemem();
@@ -87,17 +88,18 @@ export function createCompanion({dataDir,pointToLocal=p=>p,enabled=true,buddyDat
       }
     }
     const {desktopPaths,recycleRoots,...publicHardware}=hardware;
-    lastState={ok:true,at:now,settings:model.settings,...state,hardware:publicHardware,buddy:{visible:buddyVisible,position:buddyVisible&&presence.petPoint?pointToLocal(presence.petPoint):null,mouth:buddyVisible&&presence.mouthPoint?pointToLocal(presence.mouthPoint):null},events:model.events.filter(e=>e.until>now),desktopDeleteWatching:recycleWatchers.size>0,desktopIconsReady:now-desktopIcons.at<3000,panelRequest};
+    lastState={ok:true,at:now,platform:process.platform,settings:model.settings,...state,hardware:publicHardware,buddy:{visible:buddyVisible,position:buddyVisible&&presence.petPoint?pointToLocal(presence.petPoint):null,mouth:buddyVisible&&presence.mouthPoint?pointToLocal(presence.mouthPoint):null},events:model.events.filter(e=>e.until>now),desktopDeleteWatching:recycleWatchers.size>0,desktopIconsReady:now-desktopIcons.at<3000,panelRequest};
     startWorker();return lastState;
   }
   const interval=enabled?setInterval(sample,2000):null;interval?.unref();if(enabled){persist();sample();startWorker();}
   return {
     get:()=>lastState.at?lastState:sample(),
-    catalog:()=>({ok:true,items:companionCatalog(model.settings),buddyVisible:sample().buddy.visible}),
+    catalog:()=>({ok:true,platform:process.platform,items:companionCatalog(model.settings),buddyVisible:sample().buddy.visible}),
     openPanel:()=>{panelRequest={id:crypto.randomUUID(),at:Date.now()};sample();return {ok:true};},
     trigger:id=>{
       if(['gpt-running','gpt-thinking'].includes(id))id='gpt-working';
       const item=companionCatalog(model.settings).find(x=>x.id===id);if(!item)throw new Error('未知操作');
+      if(item.unsupported)throw new Error(item.unsupported);
       if(item.ui)return {ok:true,ui:item.ui};
       if(item.mode){sendBuddy(item.mode);return {ok:true,message:'已发送到 GPT 娘'};}
       if(item.buddy){const p=read(path.join(buddyDir,'presence.json'));if(!p.visible||Date.now()-p.at>=12000)throw new Error('请先打开 GPT 娘');}

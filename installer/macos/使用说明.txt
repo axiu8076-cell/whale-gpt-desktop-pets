@@ -1,0 +1,46 @@
+鲸鲸生活助手 · macOS Apple Silicon
+
+适用：M 系列芯片，macOS 14 或更新系统。Intel Mac 请勿使用此包。
+
+安装：
+1. 解压整个 ZIP，将「鲸鲸.app」拖入「应用程序」。
+2. 双击鲸鲸.app。无需 Node、Homebrew、Python 或 Xcode。
+3. 首次设置中可填写自己的 DeepSeek 官方 API Key，也可留空先使用桌宠。
+4. 菜单栏鲸鲸图标 → 鲸鲸操作台：查看动作、触发条件、实时状态、开关和番茄钟。
+5. 菜单栏 → 连接与启动设置：更改 Key、开启本机 Codex 任务读取、选择登录启动。
+
+首次打开：此独立开源包采用 ad-hoc 签名，未取得 Apple Developer ID 签名与公证。
+如果 macOS 阻止打开，请确认下载来自本仓库、核对 SHA256 后，在系统设置 → 隐私与安全性中对这一个应用选择「仍要打开」。
+请勿关闭系统 Gatekeeper。若单位策略不允许此操作，请交由 IT 审核。
+Apple 说明：https://support.apple.com/zh-cn/102445
+
+功能：
+- 正常站立、悄悄吃饭、坐在桌面工作区下沿休息。
+- CPU 负载达到 50% 时吃饭；系统内存估算使用率达到 90% 并持续 15 秒时提醒。
+- 电池不插电且 ≤20%、进入充电、接电达到 ≥95% 时提醒。台式 Mac 无电池时显示未知。
+- 手动番茄钟；开启本机任务读取后，Codex 连续闲置 15 分钟提醒，正常完成 ≥30 分钟任务后庆祝。
+- DeepSeek 官方 API 余额与观测花费；不是 ChatGPT 订阅剩余额度。
+- 普通桌面置顶；全屏 Space 不覆盖。Cmd+Option+W 显示/隐藏。
+- 双击应用可重新调出操作台；退出后再次打开应用即可恢复。
+
+Mac 版限制：
+- Apple Silicon 温度、GPU 负载、专用显存没有实现可靠读取，显示未知，不伪造数据。
+- Finder 删除原图标追踪与 GPT 娘 Windows 联动暂不可用；吃文件卡片只作手动示例演示。
+- 跟随窗口取决于 macOS 能否提供窗口几何；无法读取时可切回独立桌面。
+- 底部 Dock 留出工作区时，坐姿贴工作区下沿；Dock 自动隐藏或置于侧边时贴桌面下沿。
+- 此包不要求屏幕录制或辅助功能权限。
+
+隐私与更新：
+Key 使用 Electron safeStorage / macOS 钥匙串保护的加密文件，不内置任何人的 Key。
+更新 ad-hoc 签名应用时，macOS 可能重新询问钥匙串权限；拒绝后可重新填写自己的 Key。
+任务记录只在本机只读解析事件状态、时间，不上传聊天或标题。
+数据目录：~/Library/Application Support/WhaleCompanion
+更新：从发布页下载新包，退出鲸鲸后替换「应用程序」里的鲸鲸.app；个人数据保留。
+卸载：先在连接与启动设置取消登录启动，再退出鲸鲸，将鲸鲸.app 移到废纸篓。
+若应用已删除，可在 Finder「前往文件夹」打开 ~/Library/LaunchAgents，移除 io.github.axiu8076.whale.login.plist。
+如需彻底清除个人数据，可在 Finder 删除上面的 WhaleCompanion 数据文件夹。不要把此数据目录发给其他人。
+
+来源：
+MeteorNOX/DeepSeek-Balance-Whale-Widget；Yang-huai406 的 Codex 适配；1llysviel 的 macOS PR #128。
+https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/pull/128
+保留源代码、角色素材和 Electron 的许可证与第三方声明。角色素材不获得额外商业授权。

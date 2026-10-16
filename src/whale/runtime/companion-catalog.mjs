@@ -1,5 +1,5 @@
 import {DEFAULTS} from './companion-model.mjs';
-export function companionCatalog(settings=DEFAULTS){
+export function companionCatalog(settings=DEFAULTS,platform=process.platform){
  const s={...DEFAULTS,...settings};
  const items=[
   {id:'snack',group:'whale',title:'悄悄吃口米饭',image:'companion-snack.png',setting:'daily',effect:'左右看看，小口吃米饭，全程不说话。',when:'正常待机 25～45 秒后，与坐着休息随机轮换。',requires:'日常小动作开启；没有负载动作、提醒或双宠互动。',cadence:'每次约 9 秒，结束后站回原位；重要事件立即优先。',action:'snack',message:''},
@@ -24,5 +24,15 @@ export function companionCatalog(settings=DEFAULTS){
   {id:'gpt-menu',group:'gpt',title:'GPT 娘完整设置',image:'buddy-idle.gif',effect:'打开原挂件菜单，调整大小、显示和其他设置。',when:'右键 GPT 娘，或点击此处。',requires:'GPT 娘在运行且可见。',cadence:'手动打开。',buddy:true,mode:'menu',button:'打开菜单'},
   {id:'gpt-auto',group:'gpt',title:'GPT 娘恢复自动',image:'buddy-idle.gif',effect:'结束手动动作覆盖，重新跟随客户端任务状态。',when:'手动点击；动作演示约 16 秒后也会自动恢复。',requires:'GPT 娘在运行。',cadence:'立即生效。',buddy:true,mode:'animate-auto',button:'恢复自动'},
  ];
- return items.map(item=>({...item,enabled:item.setting?s[item.setting]:null}));
+ return items.map(item=>{
+  const value={...item,enabled:item.setting?s[item.setting]:null};
+  if(platform!=='darwin')return value;
+  if(item.buddy)return {...value,enabled:false,unsupported:'此功能依赖 Windows 版 GPT 娘，Mac 单独版暂不支持。',requires:'Mac 单独版暂不支持。'};
+  if(item.id==='delete-eat')return {...value,enabled:false,when:'Mac 版仅提供手动动作演示，不监测 Finder 文件删除。',requires:'点击立即演示；使用示例图标，不删除真实文件。',cadence:'只在手动点击时播放。'};
+  if(item.id==='heat')return {...value,enabled:false,when:'Apple Silicon 温度传感器暂不支持自动读取。',requires:'此卡仅演示动作；实测温度显示未知。'};
+  if(item.id==='eating')return {...value,when:`CPU 负载达到 ${s.loadAt}%。`,requires:'CPU 采样有效；Apple Silicon GPU 负载暂不支持。'};
+  if(item.id==='full')return {...value,when:`内存使用率达到 ${s.memoryAt}%，持续 15 秒。`,requires:'显示系统内存使用率估计值；Apple Silicon 统一内存不另报专用显存。'};
+  if(item.id==='sit')return {...value,title:'坐在桌面下沿休息',effect:'坐在主屏幕可用桌面的下沿，轻轻眨眼。',requires:'桌面模式；Dock 在底部时坐在 Dock 留出的工作区上沿。'};
+  return value;
+ });
 }

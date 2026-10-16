@@ -1,6 +1,6 @@
 # 鲸鲸与 GPT 娘 · 桌面生活助手
 
-Windows 外部桌宠整合：记账、生活提醒、小动作，以及可选的双宠互动。操作台已经内置，可查看每项功能的触发条件并立即演示。
+外部桌宠整合：记账、生活提醒、小动作，以及可选的双宠互动。支持 Windows x64 和 Apple Silicon Mac。操作台已经内置，可查看每项功能的触发条件并立即演示。
 
 <img src="src/whale/assets/companion-idle.png" width="130" alt="鲸鲸站姿"> <img src="src/whale/assets/companion-snack.png" width="130" alt="鲸鲸吃饭"> <img src="src/whale/assets/companion-sit.png" width="130" alt="鲸鲸坐着休息"> <img src="src/whale/assets/buddy-running.gif" width="130" alt="GPT 娘工作动作">
 
@@ -10,8 +10,15 @@ Windows 外部桌宠整合：记账、生活提醒、小动作，以及可选的
 
 | 安装包 | 包含内容 |
 | --- | --- |
+| `Whale-Standalone-macOS-arm64-2026.10.16.zip` | M 芯片 Mac 鲸鲸独立版，内置操作台；macOS 14+ |
 | `Whale-Standalone-Windows-x64-2026.10.16.zip` | 鲸鲸、内置操作台、记账、硬件与日常提醒、独立任务检测 |
 | `Whale-GPT-Duo-Windows-x64-2026.10.16.zip` | 上述全部功能＋GPT 娘、订阅额度、工作动作和双宠互动 |
+
+**M 芯片 Mac**：下载 Mac arm64 ZIP，解压后把 **鲸鲸.app** 拖到「应用程序」并打开。菜单栏鲸鲸图标可打开操作台与连接设置，不用安装 Node、Homebrew 或 Xcode。首次打开说明、功能范围与卸载方式见 [Mac 使用说明](installer/macos/使用说明.txt)。
+
+Mac 包采用 ad-hoc 签名，未经过 Apple Developer ID 签名及公证。如系统拦截，确认来源和校验值后，按 [Apple 说明](https://support.apple.com/zh-cn/102445) 为此应用选择「仍要打开」。
+
+**Windows**（[下载两个 Windows 包](https://github.com/axiu8076-cell/whale-gpt-desktop-pets/releases/tag/v2026.10.16.1)）：
 
 1. 将整个 ZIP 解压到普通文件夹。
 2. 双击 **安装鲸鲸.cmd**，按窗口提示安装。
@@ -22,6 +29,8 @@ Windows 外部桌宠整合：记账、生活提醒、小动作，以及可选的
 API Key 可留空，先看动作和使用提醒。DeepSeek 官方记账需要你自己的 Key；安装设置使用 Windows 当前用户加密保存。不要转发安装后的用户数据目录。
 
 ## 已合并的功能
+
+以下完整列表描述 Windows 版。Mac 版支持日常动作、操作台、CPU/内存/电池、番茄钟、DeepSeek 余额和可选任务提醒；温度、GPU/专用显存、Finder 原图标删除追踪与 GPT 娘联动暂不支持，操作台内注明。Mac 坐姿贴主屏幕可用工作区下沿。
 
 - **日常动作**：站立、静默小口吃米饭、坐在任务栏上沿休息，动作随机轮换；重要提醒优先。
 - **硬件状态**：CPU/GPU 负载高时库库吃饭；内存或专用显存接近满载时抱着米饭说“吃不下了”；真实温度、电池充电与低电量提醒。
@@ -40,7 +49,7 @@ DeepSeek API 余额与 ChatGPT/Codex 月费订阅额度分别计算。余额差�
 
 温度依赖可用传感器；CPU 温度需 LibreHardwareMonitor / OpenHardwareMonitor，缺失时显示未知。没有 Codex 或不兼容的本机记录时，任务提醒不可用，其余桌宠功能仍可使用。
 
-## 更新和卸载
+## Windows 更新和卸载
 
 安装目录为当前用户目录下的 `.whale-companion`。两个版本共用此目录，可从鲸鲸单独版直接安装双宠版，原鲸鲸数据保留。建议任选一种使用。
 
@@ -50,7 +59,11 @@ DeepSeek API 余额与 ChatGPT/Codex 月费订阅额度分别计算。余额差�
 
 ## 源码与构建
 
-`src/whale` 为鲸鲸代码和素材；`src/gpt` 为 GPT 娘代码和素材；`installer/whale` 与 `installer/duo` 为两个安装器；`tools/build-release.py` 可重新打包。
+`src/whale` 为鲸鲸代码和素材；`src/gpt` 为 GPT 娘代码和素材；`installer/whale` 与 `installer/duo` 为 Windows 安装器；`installer/macos` 为 Mac 发布资料。
+
+Mac 构建：在 Apple Silicon Mac 上执行 `python3 tools/build-macos.py --output dist-macos`。脚本校验官方 Electron 下载、保留 Framework 符号链接、编译 Swift 探针、做 ad-hoc 签名，并运行单元测试和真实 Electron 启动/操作台测试后生成 ZIP。也可运行本仓库的 `Build and verify Whale for Apple Silicon` GitHub Actions 工作流；通过测试才会上传草稿发行版。
+
+Mac 设置和数据位于 `~/Library/Application Support/WhaleCompanion`。Key 使用钥匙串保护的加密文件；登录启动与本机任务读取默认关闭。在菜单栏连接设置中管理。替换应用不会覆盖个人数据，卸载步骤见 Mac 使用说明。
 
 下载并解压 [Electron 44.3.0 Windows x64](https://github.com/electron/electron/releases/tag/v44.3.0)，保留完整许可证，在 Python 3 中执行：
 
@@ -66,7 +79,7 @@ python tools/build-release.py --electron-dir D:\electron-44.3.0-win32-x64 --vari
 本仓库是现有项目的整合与定制。感谢：
 
 - [MeteorNOX / DeepSeek-Balance-Whale-Widget](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget)，以及 Codex 适配协作者 Yang-huai406。
-- [1llysviel 的 macOS PR #128](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/pull/128)；保留相关代码与致谢，本安装包只支持 Windows。
+- [1llysviel 的 macOS PR #128](https://github.com/MeteorNOX/DeepSeek-Balance-Whale-Widget/pull/128)；复用窗口识别与跟随逻辑，并提供 Apple Silicon 独立包。
 - [T7moris / GPT-Niang](https://github.com/T7moris/GPT-Niang) 及贡献者。
 - Electron、Chromium、Node.js 和 smol-toml 的维护者。
 

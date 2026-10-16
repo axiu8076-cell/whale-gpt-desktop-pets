@@ -5,7 +5,7 @@ function createVisibilityController({ getWindow, getState, onShown = () => {}, s
   let pending = null, generation = 0, disposed = false, desired = null;
   let shown = false, recover = false, hostKey = null, revision = null, remaps = 0;
   let shownAt = -Infinity, hiddenSince = null, nativeAttempts = 0;
-  const wants = state => !state.quitting && state.ready && !state.manuallyHidden && (state.standalone || (state.host?.hostAlive !== false && state.host?.visible &&
+  const wants = state => !state.quitting && state.ready && !state.manuallyHidden && !state.systemFullscreen && (state.standalone || (state.host?.hostAlive !== false && state.host?.visible &&
     (state.fixture || state.host?.attached) && !state.host?.modal));
   const key = state => state.standalone ? 'standalone' : String(state.host?.hostPid ?? '') + ':' + String(state.host?.window ?? '');
   const epoch = state => !state.standalone && Number.isSafeInteger(state.host?.visibilityRevision) ? state.host.visibilityRevision : null;

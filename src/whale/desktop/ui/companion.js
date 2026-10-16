@@ -110,7 +110,13 @@
     text('temp',fresh?fmt(h.gpuTemp,'°C'):'等待传感器');text('cpu',fresh?`${fmt(h.cpuLoad,'%')} / ${fmt(h.gpuLoad,'%')}`:'等待采样');text('ram',fmt(h.ramPercent,'%'));text('vram',fresh?fmt(h.vramPercent,'%'):'等待采样');
     const b=h.battery;text('battery',fresh&&b?.present?`${fmt(b.percent,'%')} · ${b.charging?'充电':b.plugged?'已接电':'用电池'}`:b?.present===false?'未安装电池':'等待采样');
     text('client',!state.client.open?'未运行':!state.client.fresh?'等待读取':state.client.active?`${state.client.active} 个任务`:`闲置 ${Math.floor(state.idleSeconds/60)} 分钟`);
-    text('sensor-note',`CPU 温度：${valid(h.cpuTemp)?fmt(h.cpuTemp,'°C'):'暂不支持'}。${h.temperatureSource?'显卡温度来自系统传感器。':''}专用显存不含共享内存。${state.desktopDeleteWatching?' 桌面回收监听已就绪。':' 桌面回收监听待就绪。'}`);
+    text('sensor-note',state.platform==='darwin'?'Apple Silicon：CPU、系统内存和电池采样。温度、GPU、专用显存及 Finder 删除监测暂不支持。':`CPU 温度：${valid(h.cpuTemp)?fmt(h.cpuTemp,'°C'):'暂不支持'}。${h.temperatureSource?'显卡温度来自系统传感器。':''}专用显存不含共享内存。${state.desktopDeleteWatching?' 桌面回收监听已就绪。':' 桌面回收监听待就绪。'}`);
+    if(state.platform==='darwin'){
+      for(const key of ['temperature','desktopDelete']){const input=dialog.querySelector(`[data-setting="${key}"]`);input.disabled=true;input.closest('label').querySelector('small').textContent='Mac 版暂不支持自动监测。';}
+      for(const action of ['coffee','delete-beam']){const b=dialog.querySelector(`[data-preview="${action}"]`);b.disabled=true;b.title='Mac 单独版暂无 GPT 娘联动';}
+      for(const key of ['cpuHot','gpuHot'])dialog.querySelector(`[data-number="${key}"]`).disabled=true;
+      dialog.querySelector('[data-setting="buddy"]').closest('label').querySelector('small').textContent='独立庆祝：正常完成 30 分钟以上的本机 Codex 任务；需在连接设置开启任务读取。';
+    }
     for(const e of dialog.querySelectorAll('[data-setting]'))if(!pending)e.checked=state.settings[e.dataset.setting];
     for(const e of dialog.querySelectorAll('[data-number]'))if(document.activeElement!==e)e.value=state.settings[e.dataset.number];
     const ms=t.status==='stopped'?state.settings.focusMinutes*60000:t.remainingMs,seconds=Math.ceil(ms/1000);text('countdown',`${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`);

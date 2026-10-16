@@ -20,7 +20,7 @@ export async function runningService(dataDir = DATA_HOME) {
 }
 export async function startSupervisor(dataDir = DATA_HOME) {
   const config = readJson(path.join(dataDir, 'follow-config.json'), {});
-  if (config.launchMode === 'standalone-package' && process.env.WHALE_STANDALONE_HOME) {
+  if (process.platform === 'win32' && config.launchMode === 'standalone-package' && process.env.WHALE_STANDALONE_HOME) {
     const launcher=path.join(process.env.WINDIR||'C:\\Windows','System32','WindowsPowerShell','v1.0','powershell.exe');
     await promisify(execFile)(launcher,['-NoProfile','-ExecutionPolicy','Bypass','-WindowStyle','Hidden','-File',path.join(process.env.WHALE_STANDALONE_HOME,'bin','launch.ps1'),'-Mode','start'],{windowsHide:true,timeout:45000});return;
   }
@@ -31,6 +31,7 @@ export async function startSupervisor(dataDir = DATA_HOME) {
     return;
   }
   if (process.platform === 'darwin') {
+    if(config.launchMode==='macos-standalone-app')throw new Error('请从「应用程序」打开鲸鲸.app');
     if (config.platform !== 'darwin' || !['follow-codex', 'standalone'].includes(config.mode) || config.enabled !== true || !config.label) {
       throw new Error('请先运行 scripts/install-macos.mjs 安装 macOS 自动跟随');
     }
@@ -68,7 +69,7 @@ export async function launchDesktop({ dataDir = DATA_HOME, mode = null } = {}) {
 }
 export function supervisorStatus(dataDir = DATA_HOME) {
   const config = readJson(path.join(dataDir, 'follow-config.json'), {});
-  const installed = config.launchMode === 'standalone-package' ? true : process.platform === 'darwin'
+  const installed = ['standalone-package','macos-standalone-app'].includes(config.launchMode) ? true : process.platform === 'darwin'
     ? config.platform === 'darwin' && config.enabled === true && !!config.label
     : !!credentialStartupWrapper(config) || config.taskName === 'Codex API Balance Whale';
   return { installed, ...readJson(path.join(dataDir, 'supervisor-state.json'), {}) };

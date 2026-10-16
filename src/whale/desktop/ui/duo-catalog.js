@@ -18,7 +18,8 @@
   function page(name){catalogue.hidden=name!=='catalog';original.hidden=name!=='settings';nav.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.duoPage===name)));dialog.scrollTop=0;}
   function draw(){
     if(!data)return;const container=catalogue.querySelector('#duo-cards');container.replaceChildren();
-    catalogue.querySelector('#duo-online').textContent=data.buddyVisible?'两只都在线':'鲸鲸在线 · 双宠功能需增强版 GPT 娘';
+    catalogue.querySelector('#duo-online').textContent=data.platform==='darwin'?'鲸鲸在线 · Apple Silicon':data.buddyVisible?'两只都在线':'鲸鲸在线 · 双宠功能需增强版 GPT 娘';
+    if(data.platform==='darwin')catalogue.querySelector('.duo-footnote').textContent='Mac 单独版：温度和原图标删除监测暂不支持，相关卡片仅提供手动动作演示；GPT 娘联动不可用。';
     for(const item of data.items.filter(x=>filter==='all'||x.group===filter)){
       const card=document.createElement('article');card.className='duo-card';card.dataset.actionId=item.id;
       const figure=document.createElement('div');figure.className='duo-figure';const img=document.createElement('img');img.src='/assets/'+item.image;img.alt=item.title+'动作图示';img.loading='lazy';figure.append(img);
@@ -27,7 +28,7 @@
       const effect=document.createElement('p');effect.className='duo-effect';effect.textContent=item.effect;
       const list=document.createElement('dl');
       for(const [label,value] of [['触发条件',item.when],['需要满足',item.requires],['频率 / 结束',item.cadence]]){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=label;dd.textContent=value;list.append(dt,dd);}
-      const button=document.createElement('button');button.dataset.duoTrigger=item.id;button.textContent=item.button||'立即演示';button.className='duo-trigger';button.disabled=!!item.buddy&&!data.buddyVisible;if(button.disabled)button.title='请先打开并显示 GPT 娘';
+      const button=document.createElement('button');button.dataset.duoTrigger=item.id;button.textContent=item.unsupported?'Mac 暂不支持':item.button||'立即演示';button.className='duo-trigger';button.disabled=!!item.unsupported||!!item.buddy&&!data.buddyVisible;if(button.disabled)button.title=item.unsupported||'请先打开并显示 GPT 娘';
       body.append(title,badge,effect,list,button);card.append(figure,body);container.append(card);
     }
   }

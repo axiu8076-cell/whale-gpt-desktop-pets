@@ -22,6 +22,7 @@ const startup = { revision: 'complete-audit-v1', requestedAt: Number(process.env
 const markStartup = phase => { if (startup.phases[phase] == null) startup.phases[phase] = Date.now() - startup.requestedAt; };
 markStartup('main');
 const isMac = process.platform === 'darwin';
+const macStandalone = isMac && process.env.WHALE_MAC_STANDALONE === '1' ? require('./macos/standalone.cjs') : null;
 const usesWindowShape = process.platform === 'win32';
 let windowShape = null, windowShapeError = null;
 const toDipRect = rect => isMac ? rect : screen.screenToDipRect(null, rect);
@@ -121,7 +122,7 @@ function sendCursor(force = false) {
 function setTestCursor(point) { if (fixture) { testCursor = point; sendCursor(true); } }
 const visibilityController = createVisibilityController({
   getWindow: () => window,
-  getState: () => ({ ready: rendererReady && !modePending && (!usesWindowShape || !!windowShape), host: lastHost, standalone: desktopMode === 'standalone', fixture, manuallyHidden, quitting }),
+  getState: () => ({ ready: rendererReady && !modePending && (!usesWindowShape || !!windowShape), host: lastHost, standalone: desktopMode === 'standalone', systemFullscreen: !!macStandalone && lastHost?.fullscreen === true, fixture, manuallyHidden, quitting }),
   onShown: () => {
     if (startup.phases.interactive == null) {
       markStartup('interactive');
@@ -208,7 +209,7 @@ async function setHost(host) {
     if (window && !host.nativeFollowing && !host.attached && !desktopBoundsApplied) { window.setBounds(screen.getPrimaryDisplay().workArea); window.setAlwaysOnTop(true, 'floating'); desktopBoundsApplied = true; visibilityController.requestRecovery(); }
     visibility(); return;
   }
-  if (!host.hostAlive) { if (window) app.quit(); return; }
+  if (!host.hostAlive) { if (macStandalone) visibility(); else if (window) app.quit(); return; }
   if (!window) return;
   if (host.attached) markStartup('attached');
   // Native events own position. Only Electron may resize its non-resizable
@@ -247,6 +248,7 @@ else {
   app.on('second-instance', show);
   app.whenReady().then(async () => {
     markStartup('appReady');
+    if (macStandalone) await macStandalone.initialize();
     const { createDispatcher, UI_ORIGIN } = await import(pathToFileURL(path.join(root, 'runtime', 'dispatcher.mjs')));
     const { startBridge } = await import(pathToFileURL(path.join(root, 'runtime', 'bridge.mjs')));
     let testOptions = {};
@@ -273,7 +275,7 @@ else {
     if (isMac) {
       if (app.dock) app.dock.hide();
       window.setAlwaysOnTop(true, 'floating', 1);
-      window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true, skipTransformProcessType: true });
+      window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: !macStandalone, skipTransformProcessType: true });
     }
     window.setAlwaysOnTop(isMac || desktopMode === 'standalone', 'floating');
     if (desktopMode === 'standalone') window.setBounds(screen.getPrimaryDisplay().workArea);
@@ -349,6 +351,7 @@ else {
     await window.loadURL(UI_ORIGIN + '/widget.html').catch(() => recoverRenderer('initial-load-failed'));
     markStartup('pageLoaded');
     if (lastHost) await setHost(lastHost);
+    if (macStandalone) await macStandalone.attach({ setHost, show, panel: companionPanel });
     if (fixture) {
       const fixtureModule = process.env.WHALE_CONNECTIONS_UI_TEST === '1' ? 'connection-ui-fixture.mjs' : process.env.WHALE_ACCOUNT_NOTICES === '1' ? 'account-notice-fixture.mjs' : process.env.WHALE_RAPID_CLICK === '1' ? 'rapid-click-fixture.mjs' : process.env.WHALE_ISSUE_LAYOUT === '1' ? 'issue-layout-fixture.mjs' : process.env.WHALE_ROOT_FIXES === '1' ? 'root-fixes-fixture.mjs' : process.env.WHALE_POSITION_MEMORY === '1' ? 'position-memory-fixture.mjs' : process.env.WHALE_VISIBILITY_STRESS === '1' ? 'visibility-stress-fixture.mjs' : process.env.WHALE_DESKTOP_AUDIT === '1' ? 'desktop-audit-fixture.mjs' : 'desktop-fixture.mjs';
       const { verifyDesktop } = await import(pathToFileURL(path.join(root, 'tests', fixtureModule)));
@@ -434,6 +437,7 @@ function updateTray() {
   tray.setToolTip('API 余额小鲸鱼 · ' + (desktopMode === 'standalone' ? '独立桌面' : '跟随 Codex'));
   tray.setContextMenu(Menu.buildFromTemplate([
     {label:'鲸鲸操作台',click:()=>companionPanel?.open()},
+    ...(macStandalone ? [{ label: '连接与启动设置', click: () => macStandalone.openSettings() }] : []),
     { label: '显示 / 隐藏小鲸鱼', click: toggle }, { label: '恢复显示小鲸鱼', click: show },
     { label: '进入桌面', type: 'radio', checked: desktopMode === 'standalone', click: () => setMode('standalone') },
     { label: '跟随 Codex', type: 'radio', checked: desktopMode === 'follow-codex', click: () => setMode('follow-codex') },

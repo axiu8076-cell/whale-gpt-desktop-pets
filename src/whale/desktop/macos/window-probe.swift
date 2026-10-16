@@ -132,6 +132,27 @@ func emit(_ state: [String: Any]) throws {
     FileHandle.standardOutput.write(Data([0x0a]))
 }
 
+// Geometry only: do not request screen capture, window titles or Accessibility.
+// Fullscreen Spaces are also excluded by the standalone Electron window.
+func foregroundFullscreen() -> Bool {
+    guard let front = NSWorkspace.shared.frontmostApplication,
+          front.bundleIdentifier != "io.github.axiu8076.whale",
+          let windows = CGWindowListCopyWindowInfo([.optionOnScreenOnly, .excludeDesktopElements], kCGNullWindowID) as? [[String: Any]] else { return false }
+    for info in windows {
+        guard (info[kCGWindowOwnerPID as String] as? pid_t) == front.processIdentifier,
+              (info[kCGWindowLayer as String] as? Int) == 0,
+              let dict = info[kCGWindowBounds as String] as? NSDictionary,
+              let x = dict["X"] as? CGFloat, let y = dict["Y"] as? CGFloat,
+              let w = dict["Width"] as? CGFloat, let h = dict["Height"] as? CGFloat else { continue }
+        for display in NSScreen.screens {
+            guard let id = display.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? CGDirectDisplayID else { continue }
+            let bounds = CGDisplayBounds(id)
+            if abs(x - bounds.minX) < 3 && abs(y - bounds.minY) < 3 && w >= bounds.width - 3 && h >= bounds.height - 3 { return true }
+        }
+    }
+    return false
+}
+
 let options = parseOptions()
 var lastWindowNumber: UInt32 = 0
 var lastOwnerPID: pid_t = 0
@@ -160,6 +181,7 @@ while true {
         let bounds = window?.bounds ?? lastBounds
         let scale = window.flatMap { _ in NSScreen.main?.backingScaleFactor } ?? NSScreen.main?.backingScaleFactor ?? 1
         var state: [String: Any] = [
+            "fullscreen": foregroundFullscreen(),
             "hostAlive": hostAlive,
             "hostPid": window?.ownerPID ?? lastOwnerPID,
             "window": String(window?.windowNumber ?? lastWindowNumber),

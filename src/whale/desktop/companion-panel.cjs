@@ -19,6 +19,7 @@ function createCompanionPanel({ BrowserWindow, screen, ipcMain, preload, icon })
       ready = false; error = null;
       window = new BrowserWindow({ width, height, x: area.x + Math.round((area.width-width)/2), y: area.y + Math.round((area.height-height)/2), minWidth: Math.min(560,width), minHeight: Math.min(420,height), title: '双宠操作台 · 鲸鲸与 GPT 娘', icon, show: false, autoHideMenuBar: true, backgroundColor: '#f4f8ff', webPreferences: { preload, contextIsolation: true, nodeIntegration: false, sandbox: true, backgroundThrottling: false } });
       const current = window;
+      if (process.env.WHALE_MAC_STANDALONE === '1') current.setTitle('鲸鲸生活助手 · 操作台');
       current.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
       current.webContents.on('will-navigate', (event,url) => { if (url !== 'whale://widget/companion-panel.html') event.preventDefault(); });
       current.on('closed', () => { if (window === current) { window = null; ready = false; } });

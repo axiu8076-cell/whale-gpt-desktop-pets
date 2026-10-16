@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'unsafe-inline'; form-action 'none'">
+<title>鲸鲸设置</title><style>body{font:15px -apple-system,sans-serif;background:#f4f8ff;color:#233958;margin:30px}h1{font-size:25px}p{line-height:1.65;color:#536681}label{display:block;margin:20px 0}input[type=password]{box-sizing:border-box;width:100%;padding:12px;margin-top:9px;border:1px solid #bbcce6;border-radius:10px}button{padding:12px 20px;border:0;border-radius:12px;background:#3e75c5;color:white;font-size:15px}small{display:block;color:#677992;line-height:1.6;margin-top:8px}#status{color:#9f3046;min-height:24px}</style></head>
+<body><h1>让鲸鲸陪你工作</h1><p>Key 可以留空，动作和番茄钟照常使用。<br>设置入口始终在菜单栏鲸鲸图标里。</p>
+<label>DeepSeek 官方 API Key<input id="key" type="password" autocomplete="off" spellcheck="false" placeholder="留空不修改已有 Key"><small id="key-note">使用 macOS 钥匙串保护的加密存储。</small></label>
+<label><input id="clear" type="checkbox"> 清除已保存的 Key</label>
+<label><input id="client" type="checkbox"> 读取本机 Codex 任务状态<small>用于闲置 15 分钟提醒与长任务完成庆祝；只在本机处理任务事件。</small></label>
+<label><input id="startup" type="checkbox"> 登录 Mac 后自动启动<small>先把鲸鲸.app 放进「应用程序」。默认关闭。</small></label>
+<button id="save">保存并重启鲸鲸</button><p id="status" role="status"></p><script src="settings.js"></script></body></html>
