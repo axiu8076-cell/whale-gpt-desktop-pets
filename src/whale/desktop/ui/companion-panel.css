@@ -1,0 +1,4 @@
+html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#f4f8ff}
+.whale-companion-toggle,.whale-companion-notice,.dshwv-img{display:none!important}
+#whale-companion-dialog.duo-console{position:fixed;inset:0;margin:0;width:100%;height:100%;max-width:none;max-height:none;border:0;border-radius:0;box-shadow:none;padding:24px;box-sizing:border-box}
+#wc-close{display:none}

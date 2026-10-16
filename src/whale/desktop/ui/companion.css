@@ -1,0 +1,61 @@
+.whale-companion-toggle{position:fixed;z-index:2147483000;border:1px solid #8aabdf;border-radius:18px;padding:5px 11px;background:#f7fbff;color:#244679;font:600 12px 'Microsoft YaHei',sans-serif;box-shadow:0 3px 12px #38538124;cursor:pointer;white-space:nowrap}
+.whale-companion-notice{position:fixed;z-index:2147482999;width:208px;box-sizing:border-box;padding:11px 14px;border:1px solid #b9cee9;border-radius:17px;background:#fffef9;color:#2c4066;font:13px/1.6 'Microsoft YaHei',sans-serif;box-shadow:0 4px 16px #38538122;pointer-events:none}
+#whale-companion-dialog{width:min(500px,calc(100vw - 40px));max-height:calc(100vh - 60px);box-sizing:border-box;padding:22px;border:1px solid #adc4e9;border-radius:22px;background:#f6faff;color:#243c60;box-shadow:0 12px 60px #203c6650;font:14px/1.5 'Microsoft YaHei',sans-serif;overflow:auto}
+#whale-companion-dialog::backdrop{background:transparent}
+#whale-companion-dialog header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+#whale-companion-dialog h2{margin:0;font-size:21px;color:#234c80}
+#whale-companion-dialog button{border:1px solid #b8cbe7;background:#fff;color:#315889;border-radius:10px;padding:7px 12px;cursor:pointer;font:inherit}
+#whale-companion-dialog button:hover{background:#e9f2ff}
+#whale-companion-dialog button:disabled{opacity:.45;cursor:default}
+#whale-companion-dialog .wc-sub{font-size:12px;color:#647a96;margin:4px 0 14px}
+#whale-companion-dialog .wc-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}
+#whale-companion-dialog .wc-metric{padding:10px 12px;background:#fff;border:1px solid #dce6f5;border-radius:12px;min-height:45px}
+#whale-companion-dialog .wc-metric span{display:block;color:#71839c;font-size:12px}
+#whale-companion-dialog .wc-metric strong{font-size:17px;font-weight:600}
+#whale-companion-dialog .wc-option{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid #e0e9f7;cursor:pointer}
+#whale-companion-dialog input[type=checkbox]{accent-color:#427ac3;margin-top:5px;width:16px;height:16px}
+#whale-companion-dialog .wc-option small{display:block;color:#71819a;font-size:12px}
+#whale-companion-dialog .wc-timer{background:#e8f2ff;border-radius:14px;padding:13px;margin-top:14px}
+#whale-companion-dialog #wc-countdown{font-size:28px;font-variant-numeric:tabular-nums;color:#265b98;display:block}
+#whale-companion-dialog .wc-controls{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+#whale-companion-dialog input[type=number]{width:50px;border:1px solid #b9cce5;border-radius:6px;padding:3px;background:white;color:#2b4770}
+#whale-companion-dialog details{margin-top:14px}#whale-companion-dialog summary{cursor:pointer}
+#whale-companion-dialog .wc-threshold{display:flex;justify-content:space-between;margin:8px 0}
+#whale-companion-dialog #wc-error{color:#b54242;min-height:18px;font-size:12px}
+.whale-companion-traveller{position:fixed;z-index:2147483001;pointer-events:none;object-fit:contain;transform-origin:50% 90%;filter:drop-shadow(0 3px 2px #22344a20)}
+.whale-companion-paper{position:fixed;z-index:2147482998;pointer-events:none;width:66px;height:78px;border:2px solid #7daddd;border-radius:7px;background:#f7fcff;box-shadow:0 4px 12px #45689030;color:#4271a0;font:11px/1.2 'Microsoft YaHei';padding:5px;box-sizing:border-box;display:flex;align-items:end;overflow:hidden;overflow-wrap:anywhere}
+.whale-companion-paper:before{content:'≡';position:absolute;top:5px;left:13px;font-size:32px;color:#8abbe8}
+.whale-companion-glow{position:fixed;z-index:2147483002;pointer-events:none;width:34px;height:34px;border-radius:50%;background:#fff;box-shadow:0 0 12px 7px #b3f3ff,0 0 30px 15px #598dff}
+.whale-companion-beam{position:fixed;z-index:2147483002;pointer-events:none;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 9px 4px #b3f3ff,0 0 20px 8px #6697ff;transform-origin:0 50%}
+.whale-companion-fragment{position:fixed;z-index:2147483002;pointer-events:none;width:9px;height:11px;border-radius:2px;background:#b9def9;border:1px solid #70a9dc}
+[hidden].whale-companion-notice,[hidden].whale-companion-toggle{display:none!important}
+#whale-companion-dialog.duo-console{width:min(900px,calc(100vw - 40px));padding:24px;background:#f4f8ff}
+#whale-companion-dialog.duo-console header{margin-bottom:3px}
+#whale-companion-dialog .duo-nav{display:flex;gap:8px;position:sticky;top:-24px;z-index:4;background:#f4f8ff;padding:12px 0;border-bottom:1px solid #dce6f5;margin-bottom:14px}
+#whale-companion-dialog .duo-nav button[aria-pressed=true],#whale-companion-dialog .duo-filters button[aria-pressed=true]{background:#315f9d;color:white;border-color:#315f9d}
+#whale-companion-dialog .duo-intro{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;margin:12px 0}
+#whale-companion-dialog .duo-intro strong{font-size:16px}#whale-companion-dialog .duo-intro p{font-size:12px;color:#647a96;margin:5px 0}
+#duo-online{white-space:nowrap;color:#47765c;background:#e9f5ec;border-radius:12px;padding:4px 9px;font-size:11px}
+#whale-companion-dialog .duo-filters{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0 16px}
+#whale-companion-dialog .duo-filters button{padding:5px 12px;font-size:12px}
+#whale-companion-dialog .duo-cards{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+#whale-companion-dialog .duo-card{display:flex;gap:12px;background:white;border:1px solid #dbe5f3;border-radius:16px;padding:15px;align-items:flex-start}
+#whale-companion-dialog .duo-figure{flex:0 0 80px;width:80px;min-height:110px;background:linear-gradient(155deg,#eff6ff,#faf6ff);border-radius:13px;display:flex;align-items:center;justify-content:center}
+#whale-companion-dialog .duo-figure img{width:80px;height:112px;object-fit:contain}
+#whale-companion-dialog .duo-card-body{min-width:0;flex:1}
+#whale-companion-dialog .duo-card h3{font-size:15px;margin:0 0 5px;line-height:1.5;color:#294c7a}
+#whale-companion-dialog .duo-badge{display:inline-block;color:#386b5e;background:#edf7f2;font-size:10px;border-radius:7px;padding:2px 6px}
+#whale-companion-dialog .duo-badge.off{background:#f3f1ec;color:#7d735a}
+#whale-companion-dialog .duo-effect{font-size:12px;margin:8px 0;color:#405777}
+#whale-companion-dialog .duo-card dl{margin:8px 0 12px;font-size:11px;line-height:1.65}
+#whale-companion-dialog .duo-card dt{font-weight:600;color:#6b7f9a;margin-top:6px}
+#whale-companion-dialog .duo-card dd{margin:0;color:#506682}
+#whale-companion-dialog .duo-trigger{font-size:12px;padding:6px 12px;background:#edf4ff;color:#315f9d}
+#whale-companion-dialog .duo-footnote{font-size:11px;color:#71829b;line-height:1.7;margin:18px 0 6px}
+#whale-companion-dialog #duo-settings{max-width:620px;margin:0 auto}
+#whale-companion-dialog [hidden]{display:none!important}
+@media(max-width:720px){#whale-companion-dialog .duo-cards{grid-template-columns:1fr}#whale-companion-dialog .duo-intro{display:block}#whale-companion-dialog .duo-card dl{font-size:12px}}
+
+.whale-companion-paper.whale-companion-original-icon{display:block;padding:0;border:0;border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.whale-companion-original-icon:before{content:none}
+.whale-companion-original-icon img{display:block;width:100%;height:100%;object-fit:contain}
