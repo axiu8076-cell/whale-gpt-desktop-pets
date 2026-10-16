@@ -67,7 +67,7 @@ def build(output):
     run('/usr/bin/xcrun', 'swiftc', '-O', '-target', 'arm64-apple-macos14.0', source / 'desktop/macos/window-probe.swift', '-o', source / 'bin/window-probe')
     run('/usr/bin/codesign', '--force', '--deep', '--sign', '-', '--options', 'runtime', '--entitlements', ROOT / 'installer/macos/entitlements.plist', app)
     run('/usr/bin/codesign', '--verify', '--deep', '--strict', app)
-    run('/usr/bin/lipo', '-verify_arch', 'arm64', app / 'Contents/MacOS/Electron')
+    run('/usr/bin/lipo', app / 'Contents/MacOS/Electron', '-verify_arch', 'arm64')
     for file in source.rglob('*'):
         if file.is_file() and (file.suffix in ('.jsonl', '.sqlite', '.db', '.log') or file.name.startswith('.env') or file.name in ('api-key.encrypted', 'auth.json', 'runtime.json', 'api-settings.json')):
             raise SystemExit('Forbidden personal/runtime file in package: ' + str(file.relative_to(source)))
