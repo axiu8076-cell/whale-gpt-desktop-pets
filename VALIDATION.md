@@ -10,4 +10,17 @@
 - 双宠版验证：两只角色可见、工作动作、庆祝、光炮演示，以及鲸鲸递咖啡到达后 GPT 娘收到回应。
 - 所有公开 PowerShell 脚本语法检查通过；源码公开前执行敏感文件与凭据模式扫描。
 
-边界：未在同事的电脑验证。真实温度、电池和额度取决于本机设备与账号。全屏让位保留原有实现，未遍历所有游戏和多显示器组合。此发行包仅支持 Windows x64。
+边界：未在同事的电脑验证。真实温度、电池和额度取决于本机设备与账号。全屏让位保留原有实现，未遍历所有游戏和多显示器组合。以上记录对应 Windows x64 发行包 v2026.10.16.1。
+
+## Apple Silicon Mac · v2026.10.16.2
+
+[通过的 GitHub Actions 构建](https://github.com/axiu8076-cell/whale-gpt-desktop-pets/actions/runs/38845322066)：macOS 15 arm64（Darwin 24.6.0）、Electron 44.3.0、Node 24.20.0；源码提交 `04d33055294ca31a0c11ef5013b719791164429a`。使用空白临时数据和 Codex 目录，没有使用发布者的 Key 或登录信息。
+
+- 官方 Electron 下载 SHA256、arm64 架构、Framework 符号链接、ad-hoc 签名完整性和最终 ZIP 完整性通过。
+- 7 项逻辑测试通过：电池状态、平台能力限制、传感器未知值、登录配置转义、全屏让位、成功长任务庆祝与失败排除、CPU/电池动作。
+- 9 组 Mac 实际运行检查通过：Swift 原生探针、独立应用启动及鲸鲸渲染就绪、操作台可见、21 项目录、6 种动作触发、番茄钟启停、CPU/内存采样、无 Codex 时切换跟随与独立模式、退出冷启动并保留设置。
+- 发布包 SHA256：`a3fcb541d46795d83446fc2b08bb3e9644f0b8c2adb76f011f66a19bfe7c35a1`。已与 GitHub 上传文件摘要核对。
+
+这不等于同事电脑的完整验收：个人 API Key/钥匙串授权、真实电池状态变化、Dock/多屏/全屏视觉交互、首次下载 Gatekeeper 放行和实际 Codex 登录记录未验证。Mac 版未实现温度/GPU/专用显存、Finder 原图标删除追踪或 Windows GPT 娘联动。
+
+[机器检查结果](https://github.com/axiu8076-cell/whale-gpt-desktop-pets/releases/download/v2026.10.16.2/macos-validation.json) 随安装包公开。
